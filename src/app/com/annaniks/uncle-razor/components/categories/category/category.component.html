@@ -5,7 +5,7 @@
         <span class="label" [ngClass]="{'active_header':(activeCategory && !isMain) }"
             (click)="onClickCategory(category,isParent)">{{category.name}}</span>
         <div class="button" [ngClass]="{'active_button':activeCategory,'not-arrow-button':(multiSelect || !isMain)}"
-            *ngIf="category.subCategory.length>0" (click)="onClickButton()">
+            *ngIf="category?.subCategory?.length>0" (click)="onClickButton()">
             <span *ngIf="isMain">
                 <i class="arrow_icon material-icons">
                     {{(activeCategory)?'keyboard_arrow_down':'keyboard_arrow_right'}}
@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="button not-arrow-button" [ngClass]="{'active_button':item.isActive}"
-                    *ngIf="item.subCategory && item.subCategory.length>0" (click)="onClickSubcategoryButton(item)">
+                    *ngIf="item.subCategory && item?.subCategory?.length>0" (click)="onClickSubcategoryButton(item)">
                     <span grey> {{(item.isActive) ? '-':'+'}} </span></div>
             </div>
             <div class="third_deep_subcategory" *ngIf="item.isActive">

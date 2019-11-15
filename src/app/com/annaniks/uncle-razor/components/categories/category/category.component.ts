@@ -13,12 +13,22 @@ import { Subject } from 'rxjs';
 export class CategoryComponent implements OnInit, OnDestroy {
     private _params: { categoryId: string } = {} as { categoryId: string };
     public selectedArray: number[] = [];
-    private _isMain: boolean = false
+    private _isMain: boolean = false;
     private _multiSelect: boolean;
+    @Input('index') private _index: number;
+    @Input('queryParamid')
+    set queryParamid($event) {
+        if ($event) {
+            this._params = { categoryId: $event };
+            this._setActiveFlag({ categoryId: $event });
+        }
+    }
     @Input('params')
     set params($event: { categoryId: string }) {
-        this._params = $event;
-        this._setActiveFlag($event)
+        if ($event && $event.categoryId) {
+            this._params = $event;
+            this._setActiveFlag($event)
+        }
     }
     @Input('category')
     set category($event) {
@@ -51,7 +61,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
     }
 
     private _setIsActiveValue(): void {
-        if (this._category && this._category.subCategory.length) {
+        if (this._category && this._category.subCategory && this._category.subCategory.length) {
             for (let category of this._category.subCategory) {
                 category['isActive'] = false;
             }
@@ -66,14 +76,14 @@ export class CategoryComponent implements OnInit, OnDestroy {
         let flag: boolean = false;
         this._checkMultyQueryParams();
         if (params && params.categoryId) {
-            if (params.categoryId === this._category.self_slug) {
+            if (params.categoryId === this._category.self_slug || params.categoryId == String(this._category.id)) {
                 flag = true;
             }
         }
         if (params && params.categoryId) {
-            if (params.categoryId === this._category.self_slug) {
+            if (params.categoryId === this._category.self_slug || params.categoryId == String(this._category.id)) {
                 if (this._multiSelect) {
-                    if (!this._category.subCategory.length) {
+                    if (!(this._category.subCategory && this._category.subCategory.length)) {
                         flag = false
                     } else {
                         flag = true;
@@ -83,9 +93,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
                 }
             }
             else {
-                if (this.category.subCategory) {
+                if (this.category && this.category.subCategory) {
                     this.category.subCategory.forEach((element) => {
-                        if (element.self_slug === params.categoryId) {
+                        if (element.self_slug === params.categoryId || String(element.id) === params.categoryId) {
                             flag = true;
                             element.isActive = true;
                         } else {
@@ -93,7 +103,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
                         }
                         if (element.subCategory) {
                             element.subCategory.forEach((subcategory) => {
-                                if (subcategory.self_slug == params.categoryId) {
+                                if (subcategory.self_slug === params.categoryId || String(subcategory.id) === params.categoryId) {
                                     flag = true;
                                     element.isActive = true;
                                 }
@@ -115,7 +125,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
             let filter = JSON.parse(queryParams.filter)
             if (filter && filter["categoryId"]) {
                 let queryArr = filter["categoryId"].split(',');
-                if (this._category.subCategory.length) {
+                if (this._category && this._category.subCategory && this._category.subCategory.length) {
                     for (let subcategory of this._category.subCategory) {
                         for (let arr of queryArr) {
                             if (subcategory.id == arr) {
@@ -152,7 +162,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
             if (this._isCloseMenu && this._menuItemsService.getOpenMenu()) {
                 this._menuItemsService.openMenu();
             }
-            this._router.navigate([`/category/${category.self_slug}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+            let url: string = `/category/${category.self_slug}`;
+            if(this._isSlideNav)[
+                url = `/category/${category.slug}`
+            ]
+            this._router.navigate([url], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
         }
     }
 

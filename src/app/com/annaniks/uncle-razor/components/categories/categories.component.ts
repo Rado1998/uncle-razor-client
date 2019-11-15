@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Category } from '../../views/main/catalog/catalog.models';
-import { ActivatedRoute } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 export class CategoriesComponent implements OnInit {
     public selectedSubcategory: any[] = [];
     public params: { categoryId: string } = {} as { categoryId: string };
+    public queryParamid: string;
     @Input('categories') private _categories: Category[] = [];
     @Input('isCloseMenu') private _isCloseMenu: boolean = false;
     @Input('isParent') private _isParent: boolean = false;
@@ -23,17 +24,33 @@ export class CategoriesComponent implements OnInit {
     @Output('getSelectsArray') private _selectArr = new EventEmitter();
     private _unsubscribe$: Subject<void> = new Subject<void>();
 
-    constructor(private _activatedRoute: ActivatedRoute) { }
+    constructor(
+        private _router: Router,
+        private _activatedRoute: ActivatedRoute) { }
 
     ngOnInit() {
         this._checkRouteParams();
     }
 
     private _checkRouteParams(): void {
-        this._activatedRoute.params
+        this._router.events
             .pipe(takeUntil(this._unsubscribe$))
-            .subscribe((params: { categoryId: string }) => {
-                this.params = params;
+            .subscribe((event) => {
+                if (event instanceof NavigationEnd) {
+                    let params = this._activatedRoute.snapshot.paramMap.get('categoryId') as string;
+                    let queryParams = this._activatedRoute.snapshot.queryParams;
+                    if (params) {
+                        this.params = { categoryId: params };
+                    }
+                    let categoryId: string;
+                    if (queryParams && queryParams.parentcategoryid) {
+                        categoryId = queryParams.parentcategoryid;
+                    }
+                    if (queryParams && queryParams.categoryid) {
+                        categoryId = queryParams.categoryid;
+                    }
+                    this.queryParamid = categoryId;
+                }
             })
     }
 
@@ -76,7 +93,7 @@ export class CategoriesComponent implements OnInit {
         return this._isMain
     }
 
-    ngOnDestroy(){
+    ngOnDestroy() {
         this._unsubscribe$.next();
         this._unsubscribe$.complete();
     }

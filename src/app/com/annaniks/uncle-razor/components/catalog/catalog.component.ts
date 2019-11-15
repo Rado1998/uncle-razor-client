@@ -4,6 +4,7 @@ import { Category } from '../../views/main/catalog/catalog.models';
 import { Router, ActivatedRoute, NavigationEnd, RoutesRecognized } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { PlatformService } from '../../services/platform.service';
 
 @Component({
     selector: 'app-catalog',
@@ -25,22 +26,26 @@ export class CatalogComponent implements OnInit {
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _menuItemsService: MenuItemsService,
-        private _router: Router) {
+        private _router: Router,
+        private _platformService: PlatformService
+    ) {
     }
 
     ngOnInit() {
         this._checkRouteParams();
         this._checkwindowSize();
-        window.addEventListener('scroll', () => {
-            let y = window.pageYOffset;
-            if (y >= 180) {
-                if (!this._scroll)
-                    this._scroll = true;
-            } else {
-                if (this._scroll)
-                    this._scroll = false;
-            }
-        })
+        if (this._platformService.isBrowser) {
+            window.addEventListener('scroll', () => {
+                let y = window.pageYOffset;
+                if (y >= 180) {
+                    if (!this._scroll)
+                        this._scroll = true;
+                } else {
+                    if (this._scroll)
+                        this._scroll = false;
+                }
+            })
+        }
     }
 
     private _checkwindowSize(): void {

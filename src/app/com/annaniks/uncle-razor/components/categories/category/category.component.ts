@@ -3,7 +3,6 @@ import { Category } from '../../../views/main/catalog/catalog.models';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MenuItemsService } from '../../../services';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'app-category',
@@ -12,10 +11,21 @@ import { takeUntil } from 'rxjs/operators';
 
 })
 export class CategoryComponent implements OnInit, OnDestroy {
+    private _params: { categoryId: string } = {} as { categoryId: string };
     public selectedArray: number[] = [];
     private _isMain: boolean = false
     private _multiSelect: boolean;
-    @Input('category') private _category: Category;
+    @Input('params')
+    set params($event: { categoryId: string }) {
+        this._params = $event;
+        this._setActiveFlag($event)
+    }
+    @Input('category')
+    set category($event) {
+        this._category = $event;
+        this._setActiveFlag(this._params);
+    }
+    private _category: Category = {} as Category;
     @Input('isCloseMenu') private _isCloseMenu: boolean = false;
     @Input('isParent') private _isParent: boolean = false;
     @Input('isSlideNav') private _isSlideNav: boolean = false;
@@ -34,16 +44,14 @@ export class CategoryComponent implements OnInit, OnDestroy {
     constructor(private _router: Router,
         private _activatedRoute: ActivatedRoute,
         private _menuItemsService: MenuItemsService
-    ) {}
+    ) { }
 
     ngOnInit() {
-        this._checkQueryParams();
         this._setIsActiveValue();
-
     }
 
     private _setIsActiveValue(): void {
-        if (this._category.subCategory.length) {
+        if (this._category && this._category.subCategory.length) {
             for (let category of this._category.subCategory) {
                 category['isActive'] = false;
             }
@@ -54,51 +62,48 @@ export class CategoryComponent implements OnInit, OnDestroy {
         item.isActive = !item.isActive
     }
 
-    private _checkQueryParams(): void {
-        this._activatedRoute.params
-            .pipe(takeUntil(this._unsubscribe))
-            .subscribe((params) => {
-                let flag: boolean = false;
-                this._checkMultyQueryParams();
-                if (params && params.parentId) {
-                    if (params.parentId === this._category.self_slug) {
+    private _setActiveFlag(params: { categoryId: string }): void {
+        let flag: boolean = false;
+        this._checkMultyQueryParams();
+        if (params && params.categoryId) {
+            if (params.categoryId === this._category.self_slug) {
+                flag = true;
+            }
+        }
+        if (params && params.categoryId) {
+            if (params.categoryId === this._category.self_slug) {
+                if (this._multiSelect) {
+                    if (!this._category.subCategory.length) {
+                        flag = false
+                    } else {
                         flag = true;
                     }
+                } else {
+                    flag = true;
                 }
-                if (params && params.lastChildId) {
-                    if (params.lastChildId === this._category.self_slug) {
-                        if (this._multiSelect) {
-                            if (!this._category.subCategory.length) {
-                                flag = false
-                            } else {
-                                flag = true;
-                            }
-                        } else {
+            }
+            else {
+                if (this.category.subCategory) {
+                    this.category.subCategory.forEach((element) => {
+                        if (element.self_slug === params.categoryId) {
                             flag = true;
+                            element.isActive = true;
+                        } else {
+                            element.isActive = false
                         }
-                    }
-                    else {
-                        if (this.category.subCategory)
-                            this.category.subCategory.forEach((element) => {
-                                if (element.self_slug === params.lastChildId) {
+                        if (element.subCategory) {
+                            element.subCategory.forEach((subcategory) => {
+                                if (subcategory.self_slug == params.categoryId) {
                                     flag = true;
                                     element.isActive = true;
-                                } else {
-                                    element.isActive = false
-                                }
-                                if (element.subCategory) {
-                                    element.subCategory.forEach((subcategory) => {
-                                        if (subcategory.self_slug == params.lastChildId) {
-                                            flag = true;
-                                            element.isActive = true;
-                                        }
-                                    })
                                 }
                             })
-                    }
+                        }
+                    })
                 }
-                this._activeCategory = flag;
-            })
+            }
+        }
+        this._activeCategory = flag;
     }
 
     public onClickButton(): void {
@@ -147,19 +152,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
             if (this._isCloseMenu && this._menuItemsService.getOpenMenu()) {
                 this._menuItemsService.openMenu();
             }
-            // let params = {};
-            // if (isParent) {
-            //     params = { parentcategoryname: category.name, parentcategoryid: category.id, page: 1 };
-            // }
-            // else {
-            //     if (this._isSlideNav) {
-            //         params = { parentcategoryname: this._category.name, parentcategoryid: this._category.id, categoryname: category.name, categoryid: category.id, page: 1, filter: JSON.stringify({ categoryId: category.id.toString() }) };
-            //     }
-            //     else {
-            //         params = { categoryname: category.name, categoryid: category.id, page: 1, filter: JSON.stringify({ categoryId: category.id.toString() }) };
-            //     }
-            // }
-            this._router.navigate([`/category/${category.slug}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+            this._router.navigate([`/category/${category.self_slug}`], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
         }
     }
 

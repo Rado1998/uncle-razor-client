@@ -13,13 +13,13 @@
             </span>
             <span *ngIf="!isMain"> {{(activeCategory) ? '-':'+'}} </span>
         </div>
-        <span (click)="onClickCategory(category)" *ngIf="multiSelect && !category.subCategory.length"
+        <span (click)="onClickCategory(category)" *ngIf="multiSelect && !category?.subCategory?.length"
             [class.multy_subcategory]="multiSelect" class="subcategory_item">
             <span [class.active]="category.isSelect" class="checkbox"></span>
         </span>
     </div>
     <div class="inner" [class.scroll]="multiSelect" *ngIf="activeCategory" #inner>
-        <div *ngFor="let item of category.subCategory;let i=index">
+        <div *ngFor="let item of category?.subCategory;let i=index">
             <div [class.padding-10]="!multiSelect" class="header">
                 <div full-width display-flex align-items-center (click)="onClickCategory(item)" class="subcategory_item"
                     [ngClass]="{'multy_subcategory':multiSelect,'subcategory_item_2':!multiSelect && isMain,
@@ -33,7 +33,7 @@
                     <span grey> {{(item.isActive) ? '-':'+'}} </span></div>
             </div>
             <div class="third_deep_subcategory" *ngIf="item.isActive">
-                <span class="label category_subcategory" *ngFor="let subcategory of item.subCategory"
+                <span class="label category_subcategory" *ngFor="let subcategory of item?.subCategory"
                     (click)="onClickCategory(subcategory)">{{subcategory.name}}</span>
             </div>
 

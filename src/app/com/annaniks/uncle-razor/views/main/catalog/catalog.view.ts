@@ -73,13 +73,14 @@ export class CatalogView implements OnInit, OnDestroy {
                     }
                     this._getCategories(requestAlias);
                     let categoryId: string;
-                    if (params && params.subCategoryId) {
-                        categoryId = params.subCategoryId;
+                    if (params && params.categoryId) {
+                        categoryId = params.categoryId;
                     }
-                    if (params && params.lastChildId) {
-                        categoryId = params.lastChildId;
+                    else {
+                        this._router.navigate(['/']);
+                        return;
                     }
-                    this._setSearchParams(queryParams, params.parentId, categoryId);
+                    this._setSearchParams(queryParams, categoryId);
                     this._filterProducts();
 
                 }
@@ -89,15 +90,15 @@ export class CatalogView implements OnInit, OnDestroy {
     private _setRequestAlias(params): string {
         let requestAlias: string;
         if (params) {
-            if (params.parentId) {
-                requestAlias = params.parentId;
+            if (params.categoryId) {
+                requestAlias = params.categoryId;
             }
         }
-        return requestAlias
+        return requestAlias;
     }
 
 
-    //Redirect url from /cagalog to /category/:parentId/:subCategoryId/:lastChildId
+    //Redirect url from /cagalog to /category/:childId
     private _checkIsPerviousVersion(params) {
         if (params && params.parentcategoryid && params.parentcategoryname && this._router.url.includes('/catalog')) {
             if (params.page) {
@@ -150,7 +151,7 @@ export class CatalogView implements OnInit, OnDestroy {
 
     }
 
-    private _setSearchParams(params, parentId?: string, categoryId?: string) {
+    private _setSearchParams(params, categoryId?: string) {
         if (params.page) {
             this.page = +params.page;
         }
@@ -170,7 +171,6 @@ export class CatalogView implements OnInit, OnDestroy {
         this._filters.max = this._sort == 'max' ? true : null;
         this._filters.page = this.page - 1
         this._filters.count = this.pageLength
-        this._filters.parentId = parentId;
         if (this._filters && !this._filters.categoryId)
             this._filters.categoryId = categoryId
     }
@@ -198,10 +198,9 @@ export class CatalogView implements OnInit, OnDestroy {
                 this.productsCount = data.count;
                 this._resetProperties();
                 let paths: Path[] = data.path.sort((a, b) => { return +a.categoryId - +b.categoryId });
-                let slugs: string[] = paths.map((element) => element.slug);
-                paths.forEach((element, index) => {
+                paths.forEach((element: Path, index: number) => {
                     this._setRouteSteps({
-                        label: element.name, url: `/category/${slugs.slice(0, index + 1).join('/')}`, status: ''
+                        label: element.name, url: `/category/${element.slug}`, status: ''
                     });
                 })
                 this.isChangeCategory = false;

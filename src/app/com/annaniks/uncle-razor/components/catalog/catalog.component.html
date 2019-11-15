@@ -7,9 +7,9 @@
                 </a>
                 <div class="item___overlay">
                     <div *ngFor="let subItem of item.subCategory;let ind = index" [ngStyle]="{width:(100/item.subCategory.length)+'%'}" class="block_item">
-                        <a class="sub_label sub_header" [routerLink]="'/category/'+item?.slug+'/'+subItem.slug">
+                        <a class="sub_label sub_header" [routerLink]="'/category/'+subItem.slug">
                             <i display-none class="arrow">&gt;</i>{{subItem?.name}}</a>
-                        <a no-margin class="sub_label" [routerLink]="'/category/'+item?.slug+'/'+subItem.slug+'/'+subCategoryItem?.slug" *ngFor="let subCategoryItem of subItem.subCategory;let ind = index"><span
+                        <a no-margin class="sub_label" [routerLink]="'/category/'+subCategoryItem?.slug" *ngFor="let subCategoryItem of subItem.subCategory;let ind = index"><span
                                 margin-left-20>{{subCategoryItem?.name}}</span></a>
                     </div>
                 </div>

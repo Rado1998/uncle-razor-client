@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, Inject, ViewEncapsulation } from '@angular/core';
-import { Product, ProductScore } from '../../../models/models';
+import { Product, ProductScore, CombineStatus, PositionStatusType, StatusType } from '../../../models/models';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MainService } from '../../../views/main/main.service';
+import { ProductStatusService } from '../../../services';
 
 @Component({
     selector: 'app-goods-list-item',
@@ -11,53 +12,70 @@ import { MainService } from '../../../views/main/main.service';
 })
 export class GoodsListItemComponent implements OnInit {
     private _productRating: number = 0;
-    public isHit: boolean = false;
-    public isNew: boolean = false;
-    public isSale: boolean = false;
-    public isBarbersize: boolean = false;
-    public isMusthave: boolean = false;
-    public salePrice:number=0
+    public salePrice: number = 0;
+    private _existStatusArray: CombineStatus[] = []
+    public statusArray: StatusType[] = []
+    public position: PositionStatusType[] = []
     @Input('product') _product: Product = new Product();
     @Input('style') style;
     constructor(
         @Inject('FILE_URL') private _fileUrl: string,
         private _router: Router,
         private _titleService: Title,
-        private _mainService: MainService
-    ) { }
+        private _mainService: MainService,
+        private _productStatusService:ProductStatusService
+    ) { 
+        this.position=this._productStatusService.getPositionStatus();
+        this.statusArray=this._productStatusService.getStatusArray()
+    }
 
     ngOnInit() {
         this._calcProductRating(this._product.productScore);
         this._getStatusProducts()
     }
-    private _getStatusProducts() {
-        if(this._product.specificPrice){
-            this.isSale=true;
-            let specificPrice=+this._product.specificPrice;
-            let realPrice=+this._product.price_with_vat;
-            this.salePrice=+(100*(realPrice-specificPrice)/realPrice).toFixed(2)
+    public getPosition(status) {
+        let style = {};
+        if (status.verticalPos && status.horizontalPos) {
+            style[status.verticalPos] = status.verticalPosVal
+            style[status.horizontalPos] = status.horizontalPosVal
         }
-        if (this._product && this._product.status)
-            for (let status of this._product.status) {
-                switch (status.name) {
-                    case 'Популярные': {
-                        this.isHit = true;
-                        break
-                    }
-                    case 'Новинки': {
-                        this.isNew = true;
-                        break
-                    }                  
-                    case 'Спецпредложения': {
-                        this.isMusthave = true;
-                        break
-                    }
-                    case 'Barber Size': {
-                        this.isBarbersize = true;
-                        break
-                    }
+        return style
+    }
+    private _complateArray() {
+        for (let status of this.statusArray) {
+            for (let existStatus of this._existStatusArray) {
+                if (status.status == existStatus.name) {
+                    existStatus["icon"] = status.icon;
+                    existStatus["id"] = status.id
                 }
             }
+        }
+        if (this._existStatusArray && this._existStatusArray.length) {
+            this._existStatusArray.sort((a, b) => { return a.id - b.id });
+            for (let i = 0; i < this._existStatusArray.length; i++) {
+                this._existStatusArray[i]['verticalPos'] = this.position[i].verticalPos;
+                this._existStatusArray[i]['horizontalPos'] = this.position[i].horizontalPos;
+                this._existStatusArray[i]['verticalPosVal'] = this.position[i].verticalPosVal;
+                this._existStatusArray[i]['horizontalPosVal'] = this.position[i].horizontalPosVal
+            }
+        }
+    }
+    private _getStatusProducts() {
+        if (this._product.status && this._product.status.length) {
+            this._product.status.forEach((data) => {
+                if (data.name !== 'Спецпредложения')
+                    this._existStatusArray.push({ name: data.name })
+            })
+        }
+
+        if (this._product.specificPrice) {
+            this._existStatusArray.push({ name: 'Спецпредложения' })
+            let specificPrice = +this._product.specificPrice;
+            let realPrice = +this._product.price_with_vat;
+            this.salePrice = +(100 * (realPrice - specificPrice) / realPrice).toFixed(2)
+        }
+        this._complateArray()
+
     }
     private setProductToBasket(product): void {
         product['count'] = 1;
@@ -106,5 +124,8 @@ export class GoodsListItemComponent implements OnInit {
 
     get productRating(): number {
         return this._productRating
+    }
+    get existStatusArray():CombineStatus[] {
+        return this._existStatusArray
     }
 }

@@ -47,40 +47,15 @@ app-goods-list-item{
                             height: 55px;
                             object-fit: contain;
                         }
-                    }
-                    .right_barbersize{
-                        right: 0;
-                        top:7px;
-                    }
-                    .left_barbersize{
-                        left: 0;
-                        top: calc(50% - 45px/2);
-                    }
-                    .sale{
-                        right: 2px;
-                        top: 0;       
-                        .sale_price{
-                            position: absolute;
-                            right: 8px;
-                            top: 6px;
-                            font-size: 12px;
-                            font-weight: 500;
-                            color: red;
-                        }
-                    }
-                    .hit{
-                        left:   2px;
-                        top: 0;
-                    }
-                    .musthave{
-                        bottom: 0;
-                        right: 2px;
-                    }
-                    .new{
-                        bottom: 0;
-                        left: 2px;   
-                    }
-
+                    }                      
+                    .sale_price{
+                        position: absolute;
+                        right: 8px;
+                        top: 6px;
+                        font-size: 12px;
+                        font-weight: 500;
+                        color: red;
+                    }                
                     span{
                         display: block;
                         width: 100%;
@@ -299,8 +274,8 @@ app-slider{
     width: 100%;
 }
 .icon1{
-    top: 5px;
-    right: 53px;
+    top: 17px;
+    right: 63px;
 }
 .icon2{
     right: 2px;

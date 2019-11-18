@@ -26,38 +26,15 @@
             object-fit: contain;
         }
     }
-    .right_barbersize{
-        right: 0;
-        top:7px;
+    .sale_price{
+        position: absolute;
+        right: 8px;
+        top: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        color: red;
     }
-    .left_barbersize{
-        left: 0;
-        top: calc(50% - 45px/2);
-    }
-    .sale{
-        right: 0;
-        top: 7px;       
-        .sale_price{
-            position: absolute;
-            right: 8px;
-            top: 6px;
-            font-size: 12px;
-            font-weight: 500;
-            color: red;
-        }
-    }
-    .hit{
-        left:  0;
-        top: 7px;
-    }
-    .musthave{
-        bottom: 7px;
-        right:  0;
-    }
-    .new{
-        bottom: 7px;
-        left: 0;   
-    }
+    
     .goods_list_container{
        margin: 0 17px;     
         .header{

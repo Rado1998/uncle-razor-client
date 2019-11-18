@@ -11,29 +11,13 @@
                 </div>
             </div>
             <div class="image" position-relative cursor-pointer>
-
-                <div *ngIf="isHit" class="status_image hit">
-                    <img src="assets/images/hit.png" alt="">
+                <div [ngStyle]="getPosition(status)" *ngFor="let status of existStatusArray" class="status_image">
+                    <img [src]="status.icon" alt="">
+                    <div *ngIf="status.name =='Спецпредложения' && salePrice" class="sale_price">- {{salePrice}}%</div>
                 </div>
-
-                <div *ngIf="isSale" class="status_image sale">
-                    <img src="assets/images/sale.png" alt="">
-                    <div class="sale_price">- {{salePrice}}%</div>
-                </div>
-                <div *ngIf="isNew" class="status_image new">
-                    <img src="assets/images/new.png" alt="">
-                </div>
-
-                <div *ngIf="isBarbersize" [ngClass]="{'right_barbersize':!isSale,'left_barbersize':isSale}" class="status_image">
-                    <img src="assets/images/barbersize.png" alt="">
-                </div>
-
-                <div *ngIf="isMusthave" class="status_image musthave">
-                    <img src="assets/images/musthave.png" alt="">
-                </div>
-
                 <a [routerLink]="product?.alias?'/product/'+product?.alias:'/product/'+product?.id" display-block>
-                    <img type="image" [src]="fileUrl+'products/'+product?.smallImage" [alt]="product?.alt" width="182px" height="195px" />
+                    <img type="image" [src]="fileUrl+'products/'+product?.smallImage" [alt]="product?.alt" width="182px"
+                        height="195px" />
                 </a>
             </div>
             <div class="description" cursor-pointer>

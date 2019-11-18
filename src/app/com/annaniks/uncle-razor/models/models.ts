@@ -11,7 +11,27 @@ export interface MenuItem {
     label: string;
     routerLink: string;
 }
-
+export interface PositionStatusType {
+    verticalPos: string,
+    horizontalPos: string,
+    verticalPosVal?: string,
+    horizontalPosVal?: string
+}
+export interface StatusType {
+    status: string,
+    id: number,
+    icon: string
+}
+export interface CombineStatus {
+    id?: number,
+    icon?: string,
+    verticalPos?: string,
+    horizontalPos?: string,
+    verticalPosVal?: string,
+    horizontalPosVal?: string
+    name?: string,
+    status?: number
+}
 export interface ServerResponse<T> {
     status: number;
     type?: number;

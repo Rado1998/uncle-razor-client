@@ -12,11 +12,14 @@ import {
     AttributeSet,
     Path,
     ProductScore,
-    Reviews
+    Reviews,
+    PositionStatusType,
+    StatusType,
+    CombineStatus
 } from '../../../models/models';
 import { Subscription } from 'rxjs';
 import { Title, Meta } from '@angular/platform-browser';
-import { AppService } from '../../../services';
+import { AppService, ProductStatusService } from '../../../services';
 import { MainService } from '../main.service';
 import { LoadingService } from '../../../services/loading.service';
 import { ProductDetailsService } from './product-details.service';
@@ -30,16 +33,12 @@ import { Location } from '@angular/common';
     styleUrls: ['product-details.view.scss']
 })
 export class ProductDetailsView implements OnInit, OnDestroy {
-    public isHit: boolean = false;
-    public isNew: boolean = false;
-    public isSale: boolean = false;
-    public isBarbersize: boolean = false;
-    public isMusthave: boolean = false;
     public salePrice: number = 0
     public reviews: Reviews[] = []
     public activeSizeItem: number = 0;
     public activeTabItem: string = 'description';
     public count: number = 1;
+    public isSale: boolean = false
     private _product: ProductFull = new ProductFull();
     private _subscription: Subscription = new Subscription();
     private _paramsSubscription: Subscription = new Subscription();
@@ -47,6 +46,12 @@ export class ProductDetailsView implements OnInit, OnDestroy {
     public routeSteps = [
         { label: 'Главная', url: '/', queryParams: {}, status: '' },
     ];
+    public statusArray: StatusType[] = [
+        
+    ]
+    public position: PositionStatusType[] = [
+     
+    ]
     private _combinedProducts: CombinedProduct[] = [];
     private _selectedAttributse: { id: string; value: string }[] = []
     private _combinedAttributes: CombinedAttribute[] = [];
@@ -56,6 +61,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
     public isActive: boolean = false;
     private _isFavorite: boolean;
     private _id: string | number;
+    private _existStatusArray: CombineStatus[] = []
 
     constructor(
         @Inject('FILE_URL') public fileUrl: string,
@@ -71,8 +77,11 @@ export class ProductDetailsView implements OnInit, OnDestroy {
         private _lightboxEvent: LightboxEvent,
         private _platformService: PlatformService,
         private _location: Location,
-        private _router: Router
+        private _router: Router,
+        private _productStatusService:ProductStatusService
     ) {
+        this.position=this._productStatusService.getPositionStatus();
+        this.statusArray=this._productStatusService.getStatusArray()
         this.isBrowser = this._platformService.isBrowser;
         this._checkProductId();
 
@@ -80,39 +89,50 @@ export class ProductDetailsView implements OnInit, OnDestroy {
 
     ngOnInit() { }
 
+    public getPosition(status:CombineStatus) {        
+        let style = {};
+        if (status.verticalPos && status.horizontalPos) {
+            style[status.verticalPos] = status.verticalPosVal
+            style[status.horizontalPos] = status.horizontalPosVal
+        }
+        return style
+    }
+    private _complateArray() {
+        for (let status of this.statusArray) {
+            for (let existStatus of this._existStatusArray) {
+                if (status.status == existStatus.name) {
+                    existStatus["icon"] = status.icon;
+                    existStatus["id"] = status.id
+                }
+            }
+        }
+        if (this._existStatusArray && this._existStatusArray.length) {
+            this._existStatusArray.sort((a, b) => { return a.id - b.id });
+            for (let i = 0; i < this._existStatusArray.length; i++) {
+                this._existStatusArray[i]['verticalPos'] = this.position[i].verticalPos;
+                this._existStatusArray[i]['horizontalPos'] = this.position[i].horizontalPos;
+                this._existStatusArray[i]['verticalPosVal'] = this.position[i].verticalPosVal;
+                this._existStatusArray[i]['horizontalPosVal'] = this.position[i].horizontalPosVal
+            }
+        }
+    }
     private _getStatusProducts() {
-        this.isHit = false;
-        this.isNew = false;
-        this.isMusthave = false;
-        this.isSale = false;
-        this.isBarbersize = false;
+        if (this._product.status && this._product.status.length) {
+            this._product.status.forEach((data) => {
+                if (data.name !== 'Спецпредложения')
+                    this._existStatusArray.push({ name: data.name })
+            })
+        }
+
         if (this._product.specificPrice) {
             this.isSale = true;
+            this._existStatusArray.push({ name: 'Спецпредложения' })
             let specificPrice = +this._product.specificPrice;
             let realPrice = +this._product.price_with_vat;
             this.salePrice = +(100 * (realPrice - specificPrice) / realPrice).toFixed(2)
         }
-        if (this._product && this._product.status)
-            for (let status of this._product.status) {
-                switch (status.name) {
-                    case 'Популярные': {
-                        this.isHit = true;
-                        break
-                    }
-                    case 'Новинки': {
-                        this.isNew = true;
-                        break
-                    }
-                    case 'Спецпредложения': {
-                        this.isMusthave = true;
-                        break
-                    }
-                    case 'Barber Size': {
-                        this.isBarbersize = true;
-                        break
-                    }
-                }
-            }
+        this._complateArray()
+
     }
     private _checkIsFavorite(id: string | number): void {
         if (this._mainService.isAuthorized) {
@@ -454,12 +474,15 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             bonusPrice = (+this._product.price_with_vat * +this._mainService.getUserInfo().percent) / 100;
         }
         return bonusPrice;
-
     }
+
     get id(): number | string {
         return this._id
     }
 
+    get existStatusArray():CombineStatus[] {
+        return this._existStatusArray
+    }
 
     ngOnDestroy() {
         this._subscription.unsubscribe();

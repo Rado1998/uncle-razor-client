@@ -163,10 +163,10 @@ export class CategoryComponent implements OnInit, OnDestroy {
                 this._menuItemsService.openMenu();
             }
             let url: string = `/category/${category.self_slug}`;
-            if(this._isSlideNav)[
+            if (this._isSlideNav) [
                 url = `/category/${category.slug}`
             ]
-            this._router.navigate([url], { relativeTo: this._activatedRoute, queryParamsHandling: 'merge' });
+            this._router.navigate([url], { relativeTo: this._activatedRoute });
         }
     }
 

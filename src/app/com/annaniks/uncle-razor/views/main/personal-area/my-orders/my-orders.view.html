@@ -1,6 +1,6 @@
 <div class="my-orders-content">
     <div *ngIf="isGet" class="my-orders-container">
-        <p-table *ngIf="orderHistory[0]" [value]="orderHistory.order" dataKey="id">
+        <p-table *ngIf="orderHistory.order && orderHistory.order[0]" [value]="orderHistory.order" dataKey="id">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th style="width: 3em"></th>
@@ -37,6 +37,6 @@
                 </tr>
             </ng-template>
         </p-table>
-        <div *ngIf="!orderHistory[0]" class="default-text"> Пусто </div>
+        <div *ngIf="(orderHistory.order && !orderHistory.order[0]) || !orderHistory.order" class="default-text"> Пусто </div>
     </div>
 </div>

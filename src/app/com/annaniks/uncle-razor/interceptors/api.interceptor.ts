@@ -23,7 +23,6 @@ export class ApiInterceptor implements HttpInterceptor {
             if (req.params.get('isAuthorized') === 'true') {
                 params = req.params.delete('isAuthorized');
                 let token: string = this._cookieService.get('accessToken') || '';
-                httpHeaders = httpHeaders.append('Content-Type', 'application/json');
                 httpHeaders = httpHeaders.append('Authorization', 'Bearer ' + token)
             }
             const clonedRequest = req.clone({

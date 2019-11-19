@@ -157,6 +157,7 @@ export class UserInfoView implements OnInit, OnDestroy {
                     () => {
                         this._loadingService.hideLoading()
                     })
+
             }
         }
     }

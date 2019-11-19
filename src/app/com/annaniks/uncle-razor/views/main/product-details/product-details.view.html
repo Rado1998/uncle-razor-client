@@ -127,7 +127,7 @@
             <div class="tabs_content" [class.no-padding]="activeTabItem == 'reviews'" [ngSwitch]="activeTabItem">
                 <app-description *ngSwitchCase="'description'" [data]="product"></app-description>
                 <app-characteristic *ngSwitchCase="'characteristic'" [data]="product"></app-characteristic>
-                <app-reviews *ngSwitchCase="'reviews'" [id]="id" [data]="reviews"></app-reviews>
+                <app-reviews *ngSwitchCase="'reviews'" [id]="product?.id" [data]="reviews"></app-reviews>
             </div>
             <div class="products">
                 <app-box [isP]="true" [header]="'ПОХОЖИЕ ТОВАРЫ'">

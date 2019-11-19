@@ -8,7 +8,7 @@ import { MessageService } from 'primeng/api';
 import { MatDialog } from '@angular/material';
 import { AddProductBasketModal } from '../../modals/add-product-basket/add-product-basket.modal';
 import { CookieService } from '../../services/cookie.service';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { PlatformService } from '../../services/platform.service';
 
 @Injectable()
@@ -202,7 +202,7 @@ export class MainService {
         return this._httpClient.post('/productscomment', commentBody, { params })
     }
     public addImage(formData: FormData) {
-        let params = new HttpParams().set('isAuthorized', 'true');
+        let params = new HttpParams().set('isAuthorized', 'true')
         return this._httpClient.post('/set/image', formData, { params: params, observe: 'response', 'responseType': 'text' })
     }
 

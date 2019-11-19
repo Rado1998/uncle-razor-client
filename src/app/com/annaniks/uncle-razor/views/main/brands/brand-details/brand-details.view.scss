@@ -58,6 +58,7 @@ app-goods-list-item{
     .show {
         overflow: visible !important;
         height: auto !important;
+        min-height: 209px;
         p{
             color:red;
         }

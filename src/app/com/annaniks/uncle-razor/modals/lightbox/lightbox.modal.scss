@@ -11,6 +11,7 @@
             background-repeat: no-repeat;
             transition: background-image 0.5s;
             -moz-transition: background-image 0.5s;
+            overflow-y: hidden !important;
             // max-width: calc(80vw - 48px);
             // max-height: calc(80vh - 48px);
             // margin:0 20px;

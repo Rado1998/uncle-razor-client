@@ -26,6 +26,8 @@ import { ProductDetailsService } from './product-details.service';
 import { Lightbox, LightboxEvent, LIGHTBOX_EVENT } from 'ngx-lightbox';
 import { PlatformService } from '../../../services/platform.service';
 import { Location } from '@angular/common';
+import { Gallery, GalleryItem, ImageItem, GalleryConfig, ImageSize, ThumbnailsPosition } from '@ngx-gallery/core';
+import { Lightbox as L } from '@ngx-gallery/lightbox';
 
 @Component({
     selector: 'product-details-view',
@@ -43,15 +45,12 @@ export class ProductDetailsView implements OnInit, OnDestroy {
     private _subscription: Subscription = new Subscription();
     private _paramsSubscription: Subscription = new Subscription();
     public mainImage: string = '';
+    public items: GalleryItem[];
     public routeSteps = [
         { label: 'Главная', url: '/', queryParams: {}, status: '' },
     ];
-    public statusArray: StatusType[] = [
-        
-    ]
-    public position: PositionStatusType[] = [
-     
-    ]
+    public statusArray: StatusType[] = []
+    public position: PositionStatusType[] = []
     private _combinedProducts: CombinedProduct[] = [];
     private _selectedAttributse: { id: string; value: string }[] = []
     private _combinedAttributes: CombinedAttribute[] = [];
@@ -62,7 +61,6 @@ export class ProductDetailsView implements OnInit, OnDestroy {
     private _isFavorite: boolean;
     private _id: string | number;
     private _existStatusArray: CombineStatus[] = []
-
     constructor(
         @Inject('FILE_URL') public fileUrl: string,
         private _matDialog: MatDialog,
@@ -74,14 +72,16 @@ export class ProductDetailsView implements OnInit, OnDestroy {
         private _loadingService: LoadingService,
         private _productDetailsService: ProductDetailsService,
         private _lightbox: Lightbox,
+        private lightbox: L,
         private _lightboxEvent: LightboxEvent,
         private _platformService: PlatformService,
         private _location: Location,
         private _router: Router,
-        private _productStatusService:ProductStatusService
+        private _productStatusService: ProductStatusService,
+        public gallery: Gallery
     ) {
-        this.position=this._productStatusService.getPositionStatus();
-        this.statusArray=this._productStatusService.getStatusArray()
+        this.position = this._productStatusService.getPositionStatus();
+        this.statusArray = this._productStatusService.getStatusArray()
         this.isBrowser = this._platformService.isBrowser;
         this._checkProductId();
 
@@ -89,7 +89,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
 
     ngOnInit() { }
 
-    public getPosition(status:CombineStatus) {        
+    public getPosition(status: CombineStatus) {
         let style = {};
         if (status.verticalPos && status.horizontalPos) {
             style[status.verticalPos] = status.verticalPosVal
@@ -184,6 +184,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
         this._loadingService.showLoading();
         this.routeSteps = [{ label: 'Главная', url: '/', queryParams: {}, status: '' }];
         this._combinedAttributes = [];
+
         this._subscription = this._productDetailsService.getProductById(id).subscribe((data: ServerResponse<ProductFull>) => {
             this._product = data.messages;
             if (this._id !== this._product.alias) {
@@ -308,7 +309,6 @@ export class ProductDetailsView implements OnInit, OnDestroy {
     private _getLikeProduct(product_id) {
         this._loadingService.showLoading();
         this._product.productImages = [];
-
         this._subscription = this._productDetailsService.getProductById(product_id).subscribe((data: ServerResponse<ProductFull>) => {
             this._product = data.messages;
             this._calcProductRating(this._product.productScore);
@@ -338,24 +338,6 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             }
         }
     }
-
-
-    private _openLightboxModal(images: object[], imageIndex: number): void {
-        if (images && images.length > 0) {
-            let matDialog = this._matDialog.open(LightboxModal, {
-                width: '100%',
-                height: '100%',
-                maxHeight: '100%',
-                maxWidth: '100%',
-                panelClass: 'light-box-modal',
-                data: {
-                    images: images,
-                    imageIndex: imageIndex
-                }
-            });
-        }
-    }
-
     public onClickMainImage(): void {
         let imageIndex: number = 0;
         let images = [];
@@ -365,19 +347,21 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             }
             images.push({ image: element.name })
         })
+        let sm_album = []
+        let _albums = [];
+        for (let img of images) {
+            const src = this.fileUrl + 'products/' + img.image;
+            const caption = this.fileUrl + 'products/' + img.image
+            const thumb = this.fileUrl + 'products/' + img.image;
+            const album = {
+                src: src,
+                caption: caption,
+                thumb: thumb
+            };
+            sm_album.push({ src: src })
+            _albums.push(album);
+        }
         if (window.innerWidth > 920) {
-            let _albums = [];
-            for (let img of images) {
-                const src = this.fileUrl + 'products/' + img.image;
-                const caption = this.fileUrl + 'products/' + img.image
-                const thumb = this.fileUrl + 'products/' + img.image;
-                const album = {
-                    src: src,
-                    caption: caption,
-                    thumb: thumb
-                };
-                _albums.push(album);
-            }
             this._lightbox.open(_albums, imageIndex, { centerVertically: true });
             this._subscription = this._lightboxEvent.lightboxEvent$
                 .subscribe(event => {
@@ -386,7 +370,24 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             if (this._platformService.isBrowser)
                 document.body.style.overflow = 'hidden';
         } else {
-            this._openLightboxModal(images, imageIndex);
+            this.items = sm_album.map(item =>
+                new ImageItem({ src: item.src, thumb: item.src })
+            );
+            const config: GalleryConfig = {
+                loadingMode: "indeterminate",
+                imageSize: ImageSize.Contain,
+                thumbPosition: ThumbnailsPosition.Bottom,
+                counterPosition: 'bottom',
+                loop: true,
+                gestures: true,
+                nav:false
+            };
+            const galleryRef = this.gallery.ref('lightbox');
+            galleryRef.setConfig(config)
+            galleryRef.load(this.items);
+            this.lightbox.open(imageIndex, 'lightbox', {
+                panelClass: 'fullscreen'
+            });
         }
     }
     private _onReceivedEvent(event: any): void {
@@ -480,7 +481,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
         return this._id
     }
 
-    get existStatusArray():CombineStatus[] {
+    get existStatusArray(): CombineStatus[] {
         return this._existStatusArray
     }
 

@@ -337,16 +337,15 @@ app-slider{
 //         }
 //     }  
 // }
+
 @media only screen and (max-width: 920px){
+  
     .tab_item{
         .label{
             padding: 0 18px !important;
         }
     }
-    // .favorite_icon{
-    //     top: 6px !important;
-    //     right: 45px !important;
-    // }
+  
     .products{
         min-height: 410px !important;
     }

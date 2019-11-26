@@ -18,7 +18,7 @@ export class AppComponent {
     private metrika: Metrika,
     private router: Router,
     location: Location,
-    private _ref: ApplicationRef, private _router: Router
+    private _ref: ApplicationRef, private _router: Router,
   ) {
     let prevPath = location.path();
     this.router.events.subscribe((event) => {
@@ -31,6 +31,5 @@ export class AppComponent {
           prevPath = newPath;
         }
       });
-
   }
 }

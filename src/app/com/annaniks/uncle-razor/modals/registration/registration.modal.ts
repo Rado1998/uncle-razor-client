@@ -59,7 +59,6 @@ export class RegistrationModal implements OnInit {
             this._dialogRef.close(true);
         },
             (error) => {
-                console.error(error);
                 if (error) {
                     this._error = error.error.message[0];
                 }

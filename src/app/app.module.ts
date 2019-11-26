@@ -14,6 +14,8 @@ import localeRu from '@angular/common/locales/ru';
 import { ApiInterceptor } from './com/annaniks/uncle-razor/interceptors/api.interceptor';
 import { MetrikaModule } from 'ng-yandex-metrika';
 import { TransferHttpCacheModule } from '@nguniversal/common';
+import { GalleryModule } from '@ngx-gallery/core';
+import { LightboxModule, LIGHTBOX_CONFIG } from '@ngx-gallery/lightbox';
 
 registerLocaleData(localeRu)
 @NgModule({
@@ -26,6 +28,8 @@ registerLocaleData(localeRu)
     AppRoutingModule,
     BrowserAnimationsModule,
     TransferHttpCacheModule,
+    GalleryModule,
+    LightboxModule.withConfig({ panelClass: 'fullscreen' }),
     BrowserModule.withServerTransition({ appId: 'app-root' }),
     MetrikaModule.forRoot(
       { id: 56102548, webvisor: true }
@@ -36,6 +40,12 @@ registerLocaleData(localeRu)
     CookieService,
     ProductStatusService,
     PlatformService,
+    {
+      provide: LIGHTBOX_CONFIG,
+      useValue: {
+        keyboardShortcuts: false
+      }
+    },
     {
       provide: 'req',
       useValue: null

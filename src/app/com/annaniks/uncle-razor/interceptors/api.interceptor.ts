@@ -15,7 +15,7 @@ export class ApiInterceptor implements HttpInterceptor {
         private _cookieService: CookieService
     ) { }
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {       
         if (!checkIsRelativePath(req.url)) {
             let httpHeaders: HttpHeaders = req.headers;
             let params: HttpParams = new HttpParams();
@@ -29,10 +29,10 @@ export class ApiInterceptor implements HttpInterceptor {
                 url: `${this._baseUrl}${req.url}`,
                 headers: httpHeaders,
                 params: params
-            });
+            });                        
             return next.handle(clonedRequest)
         }
-        else {
+        else {            
             return next.handle(req);
         }
 

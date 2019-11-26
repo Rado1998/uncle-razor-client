@@ -38,7 +38,8 @@
                                     <div *ngIf="status.name =='Спецпредложения' && salePrice" class="sale_price">-
                                         {{salePrice}}%</div>
                                 </div>
-                                <img class="main_image" [alt]="product?.alt" [src]="fileUrl+'products/'+mainImage">
+                                <img  class="main_image" [alt]="product?.alt"
+                                    [src]="fileUrl+'products/'+mainImage">
                             </div>
                         </div>
                         <app-vertical-slider class="sm_slider" [sliderItems]="product.productImages"

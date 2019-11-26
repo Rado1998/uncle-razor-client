@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { BuyOneClickModal, LightboxModal } from '../../../modals';
+import { BuyOneClickModal } from '../../../modals';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -347,7 +347,6 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             }
             images.push({ image: element.name })
         })
-        let sm_album = []
         let _albums = [];
         for (let img of images) {
             const src = this.fileUrl + 'products/' + img.image;
@@ -358,7 +357,6 @@ export class ProductDetailsView implements OnInit, OnDestroy {
                 caption: caption,
                 thumb: thumb
             };
-            sm_album.push({ src: src })
             _albums.push(album);
         }
         if (window.innerWidth > 920) {
@@ -370,7 +368,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             if (this._platformService.isBrowser)
                 document.body.style.overflow = 'hidden';
         } else {
-            this.items = sm_album.map(item =>
+            this.items = _albums.map(item =>
                 new ImageItem({ src: item.src, thumb: item.src })
             );
             const config: GalleryConfig = {

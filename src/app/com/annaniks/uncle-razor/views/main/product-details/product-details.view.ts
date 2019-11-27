@@ -371,17 +371,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             this.items = _albums.map(item =>
                 new ImageItem({ src: item.src, thumb: item.src })
             );
-            const config: GalleryConfig = {
-                loadingMode: "indeterminate",
-                imageSize: ImageSize.Contain,
-                thumbPosition: ThumbnailsPosition.Bottom,
-                counterPosition: 'bottom',
-                loop: true,
-                gestures: true,
-                nav:false
-            };
             const galleryRef = this.gallery.ref('lightbox');
-            galleryRef.setConfig(config)
             galleryRef.load(this.items);
             this.lightbox.open(imageIndex, 'lightbox', {
                 panelClass: 'fullscreen'

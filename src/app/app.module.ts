@@ -14,8 +14,8 @@ import localeRu from '@angular/common/locales/ru';
 import { ApiInterceptor } from './com/annaniks/uncle-razor/interceptors/api.interceptor';
 import { MetrikaModule } from 'ng-yandex-metrika';
 import { TransferHttpCacheModule } from '@nguniversal/common';
-import { GalleryModule } from '@ngx-gallery/core';
-import { LightboxModule, LIGHTBOX_CONFIG } from '@ngx-gallery/lightbox';
+import { GalleryModule, GALLERY_CONFIG, ImageSize, ThumbnailsPosition } from '@ngx-gallery/core';
+import { LightboxModule } from '@ngx-gallery/lightbox';
 
 registerLocaleData(localeRu)
 @NgModule({
@@ -41,9 +41,15 @@ registerLocaleData(localeRu)
     ProductStatusService,
     PlatformService,
     {
-      provide: LIGHTBOX_CONFIG,
+      provide: GALLERY_CONFIG,
       useValue: {
-        keyboardShortcuts: false
+        gestures: true,
+        loadingMode: "indeterminate",
+        imageSize: ImageSize.Contain,
+        thumbPosition: ThumbnailsPosition.Bottom,
+        counterPosition: 'bottom',
+        loop: true,
+        nav: false
       }
     },
     {

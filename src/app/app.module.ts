@@ -40,6 +40,7 @@ registerLocaleData(localeRu)
     CookieService,
     ProductStatusService,
     PlatformService,
+    LoadingService,
     {
       provide: GALLERY_CONFIG,
       useValue: {
@@ -65,7 +66,7 @@ registerLocaleData(localeRu)
       useValue: httpParams.fileUrl
     },
     { provide: LOCALE_ID, useValue: "ru" },
-    LoadingService,
+
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ApiInterceptor,

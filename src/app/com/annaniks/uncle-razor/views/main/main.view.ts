@@ -15,7 +15,7 @@ export class MainView implements OnInit, OnDestroy {
     private _settings: Setting[] = [];
     private _socialItems: SocialItem[] = [];
     private _categoriesMenu: Category[] = [];
-    windowScrolled: boolean;
+    public windowScrolled: boolean;
     constructor(
         private _mainService: MainService,
         private _menuItemsService: MenuItemsService,
@@ -39,15 +39,15 @@ export class MainView implements OnInit, OnDestroy {
     }
 
     public scrollToTop(): void {
-        (function smoothscroll() {
-            if (this._platformService.isBrowser) {
+        if (this._platformService.isBrowser) {
+            (function smoothscroll() {
                 var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
                 if (currentScroll > 0) {
                     window.requestAnimationFrame(smoothscroll);
                     window.scrollTo(0, currentScroll - (currentScroll / 8));
                 }
-            }
-        })();
+            })();
+        }
     }
     private _getSettingsAll(): void {
         this._mainService.getSettingsAll().subscribe((data: ServerResponse<AllSettings>) => {

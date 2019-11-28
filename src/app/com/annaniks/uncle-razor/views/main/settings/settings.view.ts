@@ -6,7 +6,7 @@ import { AppService } from '../../../services';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SettingsService } from './settings.service';
 import { MessageService } from 'primeng/api';
-import { Title } from '@angular/platform-browser';
+import { Title, Meta } from '@angular/platform-browser';
 import { PlatformService } from '../../../services/platform.service';
 
 
@@ -34,6 +34,7 @@ export class SettingsView implements OnInit {
         private _fb: FormBuilder,
         private _settingService: SettingsService,
         private _messageService: MessageService,
+        private _metaService: Meta,
         private _title: Title,
         @Inject('FILE_URL') private _fileUrl: string,
         private _platformService: PlatformService
@@ -92,7 +93,8 @@ export class SettingsView implements OnInit {
         let setting: Setting = this._appService.checkPropertyValue(this._appService.filterArray(this._settings, 'key', this._settingName), 0);
         if (setting) {
             this._setting = setting;
-            this._title.setTitle(setting.name);
+            this._title.setTitle(setting.value);
+            this._metaService.updateTag({ name: 'description', content: this._setting.metaDescription });
             if (this._setting.key.toLowerCase() === 'contacts') {
                 let mapSetting: Setting = this._appService.checkPropertyValue(this._appService.filterArray(this._settings, 'key', 'maps'), 0);
                 this._setting.map = mapSetting;
@@ -164,5 +166,7 @@ export class SettingsView implements OnInit {
     get news() {
         return this._news;
     }
-
+    ngOnDestroy() {
+        this._metaService.updateTag({ name: 'description', content: '' });
+    }
 }

@@ -286,6 +286,7 @@ export interface Setting {
     key: string;
     name: string;
     updated_at: string;
+    metaDescription:string;
     value: string;
     isPage: string;
     map?: Setting

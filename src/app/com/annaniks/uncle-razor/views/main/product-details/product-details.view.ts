@@ -26,8 +26,6 @@ import { ProductDetailsService } from './product-details.service';
 import { Lightbox, LightboxEvent, LIGHTBOX_EVENT } from 'ngx-lightbox';
 import { PlatformService } from '../../../services/platform.service';
 import { Location } from '@angular/common';
-import { Gallery, GalleryItem, ImageItem, GalleryConfig, ImageSize, ThumbnailsPosition } from '@ngx-gallery/core';
-import { Lightbox as L } from '@ngx-gallery/lightbox';
 
 @Component({
     selector: 'product-details-view',
@@ -45,7 +43,6 @@ export class ProductDetailsView implements OnInit, OnDestroy {
     private _subscription: Subscription = new Subscription();
     private _paramsSubscription: Subscription = new Subscription();
     public mainImage: string = '';
-    public items: GalleryItem[];
     public routeSteps = [
         { label: 'Главная', url: '/', queryParams: {}, status: '' },
     ];
@@ -72,13 +69,11 @@ export class ProductDetailsView implements OnInit, OnDestroy {
         private _loadingService: LoadingService,
         private _productDetailsService: ProductDetailsService,
         private _lightbox: Lightbox,
-        private lightbox: L,
         private _lightboxEvent: LightboxEvent,
         private _platformService: PlatformService,
         private _location: Location,
         private _router: Router,
-        private _productStatusService: ProductStatusService,
-        public gallery: Gallery
+        private _productStatusService: ProductStatusService    
     ) {
         this.position = this._productStatusService.getPositionStatus();
         this.statusArray = this._productStatusService.getStatusArray()
@@ -385,14 +380,6 @@ export class ProductDetailsView implements OnInit, OnDestroy {
                 document.body.style.overflow = 'hidden';
         } else {
             this._openLightboxModal(images,imageIndex)
-            // this.items = _albums.map(item =>
-            //     new ImageItem({ src: item.src, thumb: item.src })
-            // );
-            // const galleryRef = this.gallery.ref('lightbox');
-            // galleryRef.load(this.items);
-            // this.lightbox.open(imageIndex, 'lightbox', {
-            //     panelClass: 'fullscreen'
-            // });
         }
     }
     private _onReceivedEvent(event: any): void {

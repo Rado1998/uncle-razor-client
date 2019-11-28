@@ -3,7 +3,7 @@ import { BrandsService } from './brands.service';
 import { ServerResponse } from '../../../models/models';
 import { Brand } from './brands.models';
 import { Subscription } from 'rxjs';
-import { Title } from '@angular/platform-browser';
+import { Title, Meta } from '@angular/platform-browser';
 import { LoadingService } from '../../../services/loading.service';
 
 @Component({
@@ -20,10 +20,12 @@ export class BrandsView implements OnInit, OnDestroy {
         @Inject('FILE_URL') private _fileUrl: string,
         private _brandsService: BrandsService,
         private _title: Title,
-        private _loadingService:LoadingService
+        private _loadingService: LoadingService,
+        private _metaService: Meta
     ) { }
 
     ngOnInit() {
+        this._metaService.updateTag({ name: 'description', content: 'В Интернет магазине дядя бритва можно приобрести товары для бритья и мужскую косметику. Купить в Москве по выгодной цене. Быстрая доставка. Скидки и акции на сайте.Тел. +7 929 500 50 50' });
         this._setRouteSteps();
         this._getBrands();
     }
@@ -58,5 +60,6 @@ export class BrandsView implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this._subscription.unsubscribe();
+        this._metaService.updateTag({ name: 'description', content: '' });
     }
 }

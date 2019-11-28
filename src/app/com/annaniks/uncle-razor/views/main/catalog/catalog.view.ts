@@ -187,7 +187,7 @@ export class CatalogView implements OnInit, OnDestroy {
         this._loadingService.showLoading()
         this._catalogService.filterCategory(fil)
             .pipe(takeUntil(this._unsubscribe$))
-            .subscribe((data: any) => {
+            .subscribe((data: any) => {                       
                 this._titleService.setTitle(data.title);
                 this._metaService.updateTag({ name: 'description', content: data.description });
                 this.products = data.messages;
@@ -245,5 +245,4 @@ export class CatalogView implements OnInit, OnDestroy {
         this._unsubscribe$.complete();
         this._metaService.updateTag({ name: 'description', content: '' });
     }
-
 }

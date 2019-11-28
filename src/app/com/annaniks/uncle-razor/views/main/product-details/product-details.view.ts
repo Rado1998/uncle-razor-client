@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { BuyOneClickModal } from '../../../modals';
+import { BuyOneClickModal, LightboxModal } from '../../../modals';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -338,6 +338,22 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             }
         }
     }
+    private _openLightboxModal(images: object[], imageIndex: number): void {
+        if (images && images.length > 0) {
+            let matDialog = this._matDialog.open(LightboxModal, {
+                width: '100%',
+                height: '100%',
+                maxHeight: '100%',
+                maxWidth: '100%',
+                panelClass: 'light-box-modal',
+                data: {
+                    images: images,
+                    imageIndex: imageIndex
+                }
+            });
+        }
+    }
+
     public onClickMainImage(): void {
         let imageIndex: number = 0;
         let images = [];
@@ -368,14 +384,15 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             if (this._platformService.isBrowser)
                 document.body.style.overflow = 'hidden';
         } else {
-            this.items = _albums.map(item =>
-                new ImageItem({ src: item.src, thumb: item.src })
-            );
-            const galleryRef = this.gallery.ref('lightbox');
-            galleryRef.load(this.items);
-            this.lightbox.open(imageIndex, 'lightbox', {
-                panelClass: 'fullscreen'
-            });
+            this._openLightboxModal(images,imageIndex)
+            // this.items = _albums.map(item =>
+            //     new ImageItem({ src: item.src, thumb: item.src })
+            // );
+            // const galleryRef = this.gallery.ref('lightbox');
+            // galleryRef.load(this.items);
+            // this.lightbox.open(imageIndex, 'lightbox', {
+            //     panelClass: 'fullscreen'
+            // });
         }
     }
     private _onReceivedEvent(event: any): void {

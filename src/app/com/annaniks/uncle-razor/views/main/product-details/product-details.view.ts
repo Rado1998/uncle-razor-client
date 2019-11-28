@@ -26,6 +26,7 @@ import { ProductDetailsService } from './product-details.service';
 import { Lightbox, LightboxEvent, LIGHTBOX_EVENT } from 'ngx-lightbox';
 import { PlatformService } from '../../../services/platform.service';
 import { Location } from '@angular/common';
+import { CrystalLightbox } from 'ngx-crystal-gallery';
 
 @Component({
     selector: 'product-details-view',
@@ -73,7 +74,8 @@ export class ProductDetailsView implements OnInit, OnDestroy {
         private _platformService: PlatformService,
         private _location: Location,
         private _router: Router,
-        private _productStatusService: ProductStatusService    
+        private _productStatusService: ProductStatusService,
+        private _crystalLightbox: CrystalLightbox
     ) {
         this.position = this._productStatusService.getPositionStatus();
         this.statusArray = this._productStatusService.getStatusArray()
@@ -358,6 +360,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             }
             images.push({ image: element.name })
         })
+        let sm_albums = []
         let _albums = [];
         for (let img of images) {
             const src = this.fileUrl + 'products/' + img.image;
@@ -368,6 +371,10 @@ export class ProductDetailsView implements OnInit, OnDestroy {
                 caption: caption,
                 thumb: thumb
             };
+            sm_albums.push({
+                preview: src,
+                full: src,
+            })
             _albums.push(album);
         }
         if (window.innerWidth > 920) {
@@ -379,7 +386,8 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             if (this._platformService.isBrowser)
                 document.body.style.overflow = 'hidden';
         } else {
-            this._openLightboxModal(images,imageIndex)
+            this._crystalLightbox.open(sm_albums, { index: imageIndex, counter: true })
+            // this._openLightboxModal(images,imageIndex)
         }
     }
     private _onReceivedEvent(event: any): void {

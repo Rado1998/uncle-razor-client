@@ -15,6 +15,7 @@ import { MatDialogModule } from '@angular/material';
 import { ProductDetailsService } from './product-details.service';
 import { LightboxModule } from 'ngx-lightbox';
 import { LightboxModal } from '../../../modals';
+import {CrystalGalleryModule} from 'ngx-crystal-gallery';
 
 const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
     direction: 'vertical',
@@ -39,7 +40,7 @@ const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
         SwiperModule,
         MatDialogModule,
         LightboxModule,
-
+        CrystalGalleryModule
     ],
     providers: [
         {

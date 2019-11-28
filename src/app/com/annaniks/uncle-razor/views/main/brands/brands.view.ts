@@ -25,7 +25,7 @@ export class BrandsView implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        this._metaService.updateTag({ name: 'description', content: 'В Интернет магазине дядя бритва можно приобрести товары для бритья и мужскую косметику. Купить в Москве по выгодной цене. Быстрая доставка. Скидки и акции на сайте.Тел. +7 929 500 50 50' });
+        this._metaService.updateTag({ name: 'description', content: 'В Интернет магазине дядя бритва можно приобрести товары для бритья и мужскую косметику разных брендов. Купить в Москве по выгодной цене. Быстрая доставка. Скидки и акции на сайте.Тел. +7 929 500 50 50' });
         this._setRouteSteps();
         this._getBrands();
     }

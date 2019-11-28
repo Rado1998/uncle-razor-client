@@ -7,4 +7,3 @@ export * from 'src/app/com/annaniks/uncle-razor/modals/add-product-basket/add-pr
 export * from 'src/app/com/annaniks/uncle-razor/modals/recover-password/recover-password.modal';
 export * from 'src/app/com/annaniks/uncle-razor/modals/search/search.modal';
 export * from 'src/app/com/annaniks/uncle-razor/modals/filter-category-list/filter-category-list.modal'
-export * from 'src/app/com/annaniks/uncle-razor/modals/lightbox/lightbox.modal';

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { BuyOneClickModal, LightboxModal } from '../../../modals';
+import { BuyOneClickModal } from '../../../modals';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -335,21 +335,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             }
         }
     }
-    private _openLightboxModal(images: object[], imageIndex: number): void {
-        if (images && images.length > 0) {
-            let matDialog = this._matDialog.open(LightboxModal, {
-                width: '100%',
-                height: '100%',
-                maxHeight: '100%',
-                maxWidth: '100%',
-                panelClass: 'light-box-modal',
-                data: {
-                    images: images,
-                    imageIndex: imageIndex
-                }
-            });
-        }
-    }
+
 
     public onClickMainImage(): void {
         let imageIndex: number = 0;
@@ -387,7 +373,6 @@ export class ProductDetailsView implements OnInit, OnDestroy {
                 document.body.style.overflow = 'hidden';
         } else {
             this._crystalLightbox.open(sm_albums, { index: imageIndex,manasory:false, counter: true })
-            // this._openLightboxModal(images,imageIndex)
         }
     }
     private _onReceivedEvent(event: any): void {

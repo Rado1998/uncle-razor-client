@@ -14,7 +14,6 @@ import { SwiperModule, SWIPER_CONFIG, SwiperConfigInterface } from 'ngx-swiper-w
 import { MatDialogModule } from '@angular/material';
 import { ProductDetailsService } from './product-details.service';
 import { LightboxModule } from 'ngx-lightbox';
-import { LightboxModal } from '../../../modals';
 import {CrystalGalleryModule} from 'ngx-crystal-gallery';
 
 const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
@@ -29,9 +28,7 @@ const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
         ReviewsTabComponent,
         CharacteristicTabComponent,
         VerticalSliderComponent,
-        ProductAttributeComponent,
-        LightboxModal
-
+        ProductAttributeComponent       
     ],
     imports: [
         ProductDetailsRoutingModule,
@@ -49,7 +46,7 @@ const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
         },
         ProductDetailsService
     ],
-    entryComponents:[LightboxModal],
+    entryComponents:[],
     exports: []
 })
 export class ProductDetailsModule { }

@@ -386,7 +386,7 @@ export class ProductDetailsView implements OnInit, OnDestroy {
             if (this._platformService.isBrowser)
                 document.body.style.overflow = 'hidden';
         } else {
-            this._crystalLightbox.open(sm_albums, { index: imageIndex, counter: true })
+            this._crystalLightbox.open(sm_albums, { index: imageIndex,manasory:false, counter: true })
             // this._openLightboxModal(images,imageIndex)
         }
     }

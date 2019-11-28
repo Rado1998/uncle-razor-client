@@ -28,8 +28,13 @@ crystal-lightbox-mobile{
 .cg-image-wrap{
     background-color: white !important;  
 }
+.cg-show{
+    color: black !important;
+}
 .cg-back{
-    background-color: black !important;
+    background: url('assets/images/close-24px.svg')  center/contain no-repeat !important;
+    right: 0 !important;
+    left: auto !important;
 }
 @media only screen and (max-width:920px){
     .route_step{
@@ -157,10 +162,6 @@ p-toast{
     position: fixed;
     width: 75px !important;
     top: 0 !important;
-    // position: fixed;
-    // height: 50px;
-    // width: 50px;
-    // top: calc(50% - 50px/2);
     &:hover{
         background-color: #8080801a;
     }

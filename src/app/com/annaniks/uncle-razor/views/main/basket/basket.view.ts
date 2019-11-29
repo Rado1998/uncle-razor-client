@@ -86,6 +86,7 @@ export class BasketView implements OnInit {
         this._getCities();
         this._getCarriers();
     }
+
     private _checkQueryParams(): void {
         let params = this._activatedRoute.snapshot.queryParams;
         if (params && params.orderId && params.lang) {
@@ -177,12 +178,35 @@ export class BasketView implements OnInit {
             })
         }
     }
-
+    private _getBasketProducts(productIds: string):void {
+        this._basketService.getBasketProducts(productIds).subscribe((data: ServerResponse<Product[]>) => {
+            this.basketProducts = data.messages;
+            this._setBasketProductCount()
+        })
+    }
+    private _setBasketProductCount():void {
+        if (this._platformService.isBrowser) {
+            if (JSON.parse(localStorage.getItem('basket_products'))) {
+                let basket = JSON.parse(localStorage.getItem('basket_products'));
+                basket.forEach((data) => {
+                    this.basketProducts.forEach((product) => {
+                        if (data.id == product.id) {
+                            product['count'] = data.count
+                        }
+                    })
+                })
+            }
+        }
+    }
     private _checkBasketProducts(): void {
         if (this._platformService.isBrowser) {
             if (JSON.parse(localStorage.getItem('basket_products'))) {
-
+                let idArray: Array<number> = []
                 let basket = JSON.parse(localStorage.getItem('basket_products'))
+                basket.forEach((data) => {
+                    idArray.push(data.id)
+                })
+                this._getBasketProducts(idArray.join())
                 if ((this.basketProducts.length !== basket.length)) {
                     if (this.basketProducts.length > basket.length) {
                         this.basketProducts.forEach((data, i) => {
@@ -566,7 +590,7 @@ export class BasketView implements OnInit {
                 this.promoCodeLoading = false;
             })
     }
-    
+
     private _calculatePromocodeDiscountPrice() {
         this._checkBasketProducts()
         let promoCodeLength: number = this.basketProducts.length;

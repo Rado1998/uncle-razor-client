@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ServerResponse } from '../../../models/models';
+import { ServerResponse, Product } from '../../../models/models';
 import { ShippingPrice, CarrierType, PromoCode } from './basket.models';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
@@ -36,5 +36,8 @@ export class BasketService {
     public getAllAddresses() {
         let params = new HttpParams().set('isAuthorized', 'true');
         return this._httpClient.get('/address', { params })
+    }
+    public getBasketProducts(productIds:string){
+        return this._httpClient.post<ServerResponse<Product[]>>(`/query/id/list`,{"name": productIds})
     }
 }

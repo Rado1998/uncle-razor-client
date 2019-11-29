@@ -10,6 +10,7 @@ import { ShippingPrice, CarrierType, PromoCode } from './basket.models';
 import { Title } from '@angular/platform-browser';
 import { CookieService } from '../../../services/cookie.service';
 import { PlatformService } from '../../../services/platform.service';
+import { LoadingService } from '../../../services/loading.service';
 
 @Component({
     selector: 'basket-view',
@@ -71,6 +72,7 @@ export class BasketView implements OnInit {
         private _title: Title,
         private _cookieService: CookieService,
         private _platformService: PlatformService,
+        private _loadingService:LoadingService,
         @Inject("FILE_URL") private _fileUrl: string
     ) {
         this._checkBasketProducts();
@@ -178,10 +180,12 @@ export class BasketView implements OnInit {
             })
         }
     }
-    private _getBasketProducts(productIds: string):void {
+    private _getBasketProducts(productIds: string):void {        
+        this._loadingService.showLoading()
         this._basketService.getBasketProducts(productIds).subscribe((data: ServerResponse<Product[]>) => {
             this.basketProducts = data.messages;
             this._setBasketProductCount()
+            this._loadingService.hideLoading()
         })
     }
     private _setBasketProductCount():void {

@@ -17,14 +17,16 @@
             transition: all 0.5s;
             color:white;
             &:hover>.item___overlay {
-                display: block;
-            }
-            .item___overlay {
+                // display: block;               
                 visibility: visible;
                 opacity: 1;
-                transition: opacity 0s, visibility 0s;
+            }
+            .item___overlay {
+                visibility: hidden;
+                opacity: 0;
+                // display: none;
+                transition: opacity 0s,visibility 0s ;
                 transition-delay: 200ms;
-                display: none;
                 position: absolute;
                 z-index: 11;
                 max-width: 1172px;

@@ -18,6 +18,7 @@ import { LoadingService } from '../../../services/loading.service';
     styleUrls: ['basket.view.scss']
 })
 export class BasketView implements OnInit {
+    public isGet:boolean=false
     private _orderForm: FormGroup;
     public basketProducts: Product[] = [];
     public routeSteps = [];
@@ -72,7 +73,7 @@ export class BasketView implements OnInit {
         private _title: Title,
         private _cookieService: CookieService,
         private _platformService: PlatformService,
-        private _loadingService:LoadingService,
+        private _loadingService: LoadingService,
         @Inject("FILE_URL") private _fileUrl: string
     ) {
         this._checkBasketProducts();
@@ -180,54 +181,37 @@ export class BasketView implements OnInit {
             })
         }
     }
-    private _getBasketProducts(productIds: string):void {        
+    private _getBasketProducts(productIds: string): void {
         this._loadingService.showLoading()
         this._basketService.getBasketProducts(productIds).subscribe((data: ServerResponse<Product[]>) => {
             this.basketProducts = data.messages;
             this._setBasketProductCount()
+            this._loadingService.hideLoading();
+            this.isGet=true
+        },
+        ()=>{
             this._loadingService.hideLoading()
         })
     }
-    private _setBasketProductCount():void {
-        if (this._platformService.isBrowser) {
-            if (JSON.parse(localStorage.getItem('basket_products'))) {
-                let basket = JSON.parse(localStorage.getItem('basket_products'));
-                basket.forEach((data) => {
-                    this.basketProducts.forEach((product) => {
-                        if (data.id == product.id) {
-                            product['count'] = data.count
-                        }
-                    })
-                })
-            }
-        }
+    private _setBasketProductCount(): void {
+        let basket = JSON.parse(localStorage.getItem('basket_products'));
+        basket.forEach((data:Product) => {
+            this.basketProducts.forEach((product) => {
+                if (data.id == product.id) {
+                    product['count'] = data.count
+                }
+            })
+        })  
     }
     private _checkBasketProducts(): void {
         if (this._platformService.isBrowser) {
             if (JSON.parse(localStorage.getItem('basket_products'))) {
                 let idArray: Array<number> = []
                 let basket = JSON.parse(localStorage.getItem('basket_products'))
-                basket.forEach((data) => {
+                basket.forEach((data:Product) => {
                     idArray.push(data.id)
                 })
-                this._getBasketProducts(idArray.join())
-                if ((this.basketProducts.length !== basket.length)) {
-                    if (this.basketProducts.length > basket.length) {
-                        this.basketProducts.forEach((data, i) => {
-                            let index = basket.indexOf(data);
-                            if (index == -1) {
-                                this.basketProducts.splice(i, 1)
-                            }
-                        })
-                    } else {
-                        basket.forEach((data) => {
-                            let index = this.basketProducts.indexOf(data);
-                            if (index == -1) {
-                                this.basketProducts.push(data)
-                            }
-                        })
-                    }
-                }
+                this._getBasketProducts(idArray.join())                
             }
         }
     }
@@ -596,7 +580,9 @@ export class BasketView implements OnInit {
     }
 
     private _calculatePromocodeDiscountPrice() {
+
         this._checkBasketProducts()
+
         let promoCodeLength: number = this.basketProducts.length;
         let count: number = 0;
         let salePrice;

@@ -294,7 +294,7 @@
         </app-box>
     </div>
     <div class="empty_basket"
-        *ngIf="((basketProducts && basketProducts.length==0) || !basketProducts) && isPaymentChecked">
+        *ngIf="isGet && ((basketProducts && basketProducts.length==0) || !basketProducts) && isPaymentChecked">
         <h1>Ваша корзина пуста</h1>
     </div>
 

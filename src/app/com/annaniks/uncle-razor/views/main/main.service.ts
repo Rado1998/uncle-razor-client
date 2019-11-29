@@ -87,6 +87,11 @@ export class MainService {
             let products = localStorage.getItem('basket_products');
             if (products) {
                 productsItems = JSON.parse(products);
+                productsItems.forEach((data, index) => {
+                    if (data.id == product.id) {
+                        productsItems.splice(index, 1);
+                    }
+                })
             }
             productsItems.push(product);
             localStorage.setItem('basket_products', JSON.stringify(productsItems));

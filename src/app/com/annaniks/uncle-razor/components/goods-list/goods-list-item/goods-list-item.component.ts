@@ -72,7 +72,7 @@ export class GoodsListItemComponent implements OnInit {
             this._existStatusArray.push({ name: 'Спецпредложения' })
             let specificPrice = +this._product.specificPrice;
             let realPrice = +this._product.price_with_vat;
-            this.salePrice = +(100 * (realPrice - specificPrice) / realPrice).toFixed(2)
+            this.salePrice = +((100 * (realPrice - specificPrice)) / realPrice).toFixed(2)
         }
         this._complateArray()
 

@@ -11,7 +11,7 @@
             <app-filters [item]="isChangeCategory" *ngIf="showFilters"></app-filters>
         </div>
         <div class="items">
-            <app-box [isFilter]="true" [header]="label" [headerPosition]="'left'" [searchVisible]="true">
+            <app-box [routes]="routeSteps" [isFilter]="true" [header]="label" [headerPosition]="'left'" [searchVisible]="true">
                 <app-goods-list>
                     <app-goods-list-item *ngFor="let item of products" [product]="item"></app-goods-list-item>
                 </app-goods-list>

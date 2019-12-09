@@ -76,7 +76,7 @@ export class BasketView implements OnInit {
         private _loadingService: LoadingService,
         @Inject("FILE_URL") private _fileUrl: string
     ) {
-        this._checkBasketProducts();
+        this._getBasketProducts();
         this._checkQueryParams();
         this.visiblePaymentMethods = this.paymentMethods;
     }
@@ -181,7 +181,7 @@ export class BasketView implements OnInit {
             })
         }
     }
-    private _getBasketProducts(productIds: string): void {
+    private _getBasketProductsByRequest(productIds: string): void {
         this._loadingService.showLoading()
         this._basketService.getBasketProducts(productIds).subscribe((data: ServerResponse<Product[]>) => {
             this.basketProducts = data.messages;
@@ -194,6 +194,23 @@ export class BasketView implements OnInit {
                 this._loadingService.hideLoading()
             })
     }
+    private _checkBasketProducts(): void {
+        if (this._platformService.isBrowser) {
+            if (JSON.parse(localStorage.getItem('basket_products'))) {
+                let basket = JSON.parse(localStorage.getItem('basket_products'))
+                if ((this.basketProducts.length !== basket.length)) {
+                    if (this.basketProducts.length > basket.length) {
+                        this.basketProducts.forEach((data, i) => {
+                            let index = basket.indexOf(data);
+                            if (index == -1) {
+                                this.basketProducts.splice(i, 1)
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
     private _setBasketProductCount(): void {
         let basket = JSON.parse(localStorage.getItem('basket_products'));
         basket.forEach((data: Product) => {
@@ -204,7 +221,7 @@ export class BasketView implements OnInit {
             })
         })
     }
-    private _checkBasketProducts(): void {
+    private _getBasketProducts(): void {
         if (this._platformService.isBrowser) {
             if (JSON.parse(localStorage.getItem('basket_products'))) {
                 let idArray: Array<number> = []
@@ -212,7 +229,7 @@ export class BasketView implements OnInit {
                 basket.forEach((data: Product) => {
                     idArray.push(data.id)
                 })
-                this._getBasketProducts(idArray.join())
+                this._getBasketProductsByRequest(idArray.join())
             }else{
                 this._isGet=true
             }
@@ -312,17 +329,17 @@ export class BasketView implements OnInit {
             })
     }
 
-    public handleDeleteEvent(index: number): void {
-        let deletedProductId = this.basketProducts[index]['id'];
+    public handleDeleteEvent(index: number): void {        
+        let deletedProductId = this.basketProducts[index]['id'];        
         if (this._promoCode) {
             delete this._promoCode[deletedProductId];
         }
         this.basketProducts.splice(index, 1);
+        this._productIdArray.splice(index,1)
         if (this._platformService.isBrowser)
             localStorage.setItem('basket_products', JSON.stringify(this.basketProducts));
         if (this.isPromocode) {
             this._calculatePromocodeDiscountPrice()
-
         }
         this._mainService.checkUserBasketPrice();
     }
@@ -573,7 +590,6 @@ export class BasketView implements OnInit {
                 this.promoCodeMessage = `Успешно активирован промокод`;
                 this.promoCodeLoading = false;
                 this.isDiscount = true
-
                 this._calculatePromocodeDiscountPrice()
             },
             (error) => {
@@ -583,9 +599,7 @@ export class BasketView implements OnInit {
     }
 
     private _calculatePromocodeDiscountPrice() {
-
         this._checkBasketProducts()
-
         let promoCodeLength: number = this.basketProducts.length;
         let count: number = 0;
         let salePrice;
@@ -620,10 +634,10 @@ export class BasketView implements OnInit {
             if (count == promoCodeLength) {
                 this.isDiscount = false
             } else {
-                this.isDiscount = true
+                this.isDiscount = true                
                 for (let id of this._productIdArray) {
                     let salePrice;
-                    let discountType: string;
+                    let discountType: string;                                
                     if (this._promoCode[id] !== 0) {
                         if (this._promoCode[id]['discount_type'] == "Percent - order") {
                             salePrice = +this._promoCode[id]['reduction_amount'] / 100;
@@ -651,7 +665,6 @@ export class BasketView implements OnInit {
         let totalPrice: number = this._checkBasketPrice();
         if (this.isPromocode) {
             totalPrice = this._checkDiscountPrice()
-            // totalPrice = totalPrice - ((totalPrice * this._appService.checkPropertyValue(this._promoCode, 'reduction_amount')) / 100);
         }
         if (this.isPack) {
             totalPrice += 150;

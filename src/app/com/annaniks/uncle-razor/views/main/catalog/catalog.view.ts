@@ -63,7 +63,7 @@ export class CatalogView implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribe$))
             .subscribe((event) => {
                 if (event instanceof NavigationEnd) {
-                    let params = this._activatedRoute.snapshot.params;
+                    let params = this._activatedRoute.snapshot.params;                    
                     let queryParams = this._activatedRoute.snapshot.queryParams;
                     this._isPerviousVersion = this._checkIsPerviousVersion(queryParams);
                     if (this._isPerviousVersion) return;
@@ -187,7 +187,7 @@ export class CatalogView implements OnInit, OnDestroy {
         this._loadingService.showLoading()
         this._catalogService.filterCategory(fil)
             .pipe(takeUntil(this._unsubscribe$))
-            .subscribe((data: any) => {                       
+            .subscribe((data: any) => {
                 this._titleService.setTitle(data.title);
                 this._metaService.updateTag({ name: 'description', content: data.description });
                 this.products = data.messages;

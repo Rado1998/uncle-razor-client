@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AppService } from '../../services';
 import { MatDialog } from '@angular/material';
 import { FilterCategoryListModal } from '../../modals';
+import { Breadcrumbs } from '../../models/models';
 
 @Component({
     selector: 'app-box',
@@ -17,6 +18,12 @@ export class BoxComponent implements OnInit {
     @Input('searchVisible') private _searchVisible: boolean = false;
     @Input('isFilter') private _isFilter: boolean
     @Input('isP') private _isP: boolean
+    @Input('routes')
+    set routeSteps($event) {
+        if ($event)
+            this._routeSteps = $event
+    }
+    private _routeSteps: Breadcrumbs[] = []
     public sort: { name: string, value: string };
     private _sortings: { name: string, value: string }[] = [
         { name: 'По умолчанию ', value: 'none' },
@@ -53,15 +60,20 @@ export class BoxComponent implements OnInit {
     }
     public openFilterCategoryList() {
         let param;
+        let idParam
         this._activatedRoute.queryParams.subscribe((params) => {
             param = params
         })
+        this._activatedRoute.params.subscribe((params) => {
+            idParam = params
+        })
+
         let dialog = this._matDialog.open(FilterCategoryListModal, {
             width: '100%',
             height: '100%',
             maxWidth: '100%',
             panelClass: 'filter_category_modal',
-            data: { params: param }
+            data: { params: param, idParam: idParam, routeSteps: this._routeSteps }
         })
     }
     private _findSelectedSort(selectedSortValue: string): void {

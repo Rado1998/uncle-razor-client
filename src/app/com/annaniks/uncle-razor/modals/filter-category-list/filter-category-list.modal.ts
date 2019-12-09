@@ -45,26 +45,11 @@ export class FilterCategoryListModal {
     ];
 
     public categotyListName: Array<{ name: string, isOpen: boolean }> = [
-        {
-            name: 'Категории',
-            isOpen: false
-        },
-        {
-            name: 'Бренды',
-            isOpen: false
-        },
-        {
-            name: 'Страна',
-            isOpen: false
-        },
-        {
-            name: 'Цена',
-            isOpen: false
-        },
-        {
-            name: 'Скидка',
-            isOpen: false
-        },
+        { name: 'Категории', isOpen: false },
+        { name: 'Бренды', isOpen: false },
+        { name: 'Страна', isOpen: false },
+        { name: 'Цена', isOpen: false },
+        { name: 'Скидка', isOpen: false },
     ]
 
     private _options: Options = {
@@ -122,7 +107,8 @@ export class FilterCategoryListModal {
             sendObject["reduction"] = reduction
         }
         this._dialogRef.close(true)
-        this._router.navigate(['/catalog'], { relativeTo: this._activatedRoute, queryParams: { page: null, filter: JSON.stringify(sendObject) }, queryParamsHandling: "merge" })
+        let url = (categoryId) ? '/category/' + categoryId : '/category/' + this._data.idParam.categoryId
+        this._router.navigate([url], { relativeTo: this._activatedRoute, queryParams: { page: null, filter: JSON.stringify(sendObject) }, queryParamsHandling: "merge" })
     }
     public reset(): void {
         this.clean();
@@ -134,7 +120,8 @@ export class FilterCategoryListModal {
         } else {
             sendFilter = null
         }
-        this._router.navigate(['/catalog'], { queryParams: { filter: sendFilter, page: null, }, relativeTo: this._activatedRoute, queryParamsHandling: "merge" })
+        let url:string = (this._data.routeSteps && this._data.routeSteps.length > 1) ? this._data.routeSteps[1].url : '/category/' + this._data.idParam.categoryId
+        this._router.navigate([url], { queryParams: { filter: sendFilter, page: null, }, relativeTo: this._activatedRoute, queryParamsHandling: "merge" })
     }
     private compbineObservable(): void {
         const combine = forkJoin(
@@ -225,6 +212,7 @@ export class FilterCategoryListModal {
                             }
                         })
                     }
+
                 } else {
                     arrName.forEach((data) => {
                         if (data.id == parseInt(val)) {
@@ -236,8 +224,9 @@ export class FilterCategoryListModal {
         }
     }
     private _checkQueryParams(): void {
-        if (this._data.params && this._data.params.parentcategoryid && this._data.params.parentcategoryname) {
-            this._getCategories(this._data.params.parentcategoryid, this._data.params.parentcategoryname);
+        if (this._data && this._data.idParam)
+            this._getCategories(this._data.idParam.categoryId);
+        if (this._data.params) {
             if (this._data.params.page) {
                 this._page = +this._data.params.page;
             }
@@ -273,7 +262,7 @@ export class FilterCategoryListModal {
             this._router.navigate(['/']);
         }
     }
-    private _getCategories(id: number, categoryname: string): void {
+    private _getCategories(id: string): void {
         this._mainService.getCategoriesById(id).subscribe((data: ServerResponse<Category[]>) => {
             this._categories = data.messages;
             this._setParam()

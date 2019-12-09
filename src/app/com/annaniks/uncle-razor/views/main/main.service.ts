@@ -184,7 +184,7 @@ export class MainService {
         });
     }
 
-    public getCategoriesById(id: number): Observable<ServerResponse<Category[]>> {
+    public getCategoriesById(id: string): Observable<ServerResponse<Category[]>> {
         return this._httpClient.get<ServerResponse<Category[]>>(`/category/${id}`);
     }
 

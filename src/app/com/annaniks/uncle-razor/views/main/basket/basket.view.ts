@@ -230,8 +230,8 @@ export class BasketView implements OnInit {
                     idArray.push(data.id)
                 })
                 this._getBasketProductsByRequest(idArray.join())
-            }else{
-                this._isGet=true
+            } else {
+                this._isGet = true
             }
         }
     }
@@ -329,15 +329,25 @@ export class BasketView implements OnInit {
             })
     }
 
-    public handleDeleteEvent(index: number): void {        
-        let deletedProductId = this.basketProducts[index]['id'];        
+    public handleDeleteEvent(index: number): void {
+        let deletedProductId = this.basketProducts[index]['id'];
         if (this._promoCode) {
             delete this._promoCode[deletedProductId];
         }
         this.basketProducts.splice(index, 1);
-        this._productIdArray.splice(index,1)
-        if (this._platformService.isBrowser)
-            localStorage.setItem('basket_products', JSON.stringify(this.basketProducts));
+        this._productIdArray.splice(index, 1)
+        if (this._platformService.isBrowser) {
+            let product = JSON.parse(localStorage.getItem('basket_products'));
+            let deletedProduct:Product = product.filter((data) => {
+                return data.id == deletedProductId
+            })[0]
+            let index:number = product.indexOf(deletedProduct);
+            if (index > -1) {
+                product.splice(index, 1);
+                localStorage.setItem('basket_products', JSON.stringify(product));
+            }
+        }
+
         if (this.isPromocode) {
             this._calculatePromocodeDiscountPrice()
         }
@@ -634,10 +644,10 @@ export class BasketView implements OnInit {
             if (count == promoCodeLength) {
                 this.isDiscount = false
             } else {
-                this.isDiscount = true                
+                this.isDiscount = true
                 for (let id of this._productIdArray) {
                     let salePrice;
-                    let discountType: string;                                
+                    let discountType: string;
                     if (this._promoCode[id] !== 0) {
                         if (this._promoCode[id]['discount_type'] == "Percent - order") {
                             salePrice = +this._promoCode[id]['reduction_amount'] / 100;
@@ -788,7 +798,7 @@ export class BasketView implements OnInit {
         }
         return laterPrice;
     }
-    get isGet():boolean{
+    get isGet(): boolean {
         return this._isGet
     }
 }

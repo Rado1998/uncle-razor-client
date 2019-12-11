@@ -105,7 +105,7 @@ export class BasketView implements OnInit {
             allAddress: [''],
             name: ['', Validators.required],
             phone: ['', [Validators.required, Validators.minLength(10)]],
-            email: ['', [Validators.required, Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)]],
+            email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/)]],
             comment: [''],
             city: [null, Validators.required],
             address: ['', Validators.required],

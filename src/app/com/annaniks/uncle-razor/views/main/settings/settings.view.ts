@@ -77,7 +77,7 @@ export class SettingsView implements OnInit {
         this._feedbackForm = this._fb.group({
             name: [null, Validators.required],
             phone: [null, [Validators.required, Validators.minLength(10)]],
-            email: [null, [Validators.required, Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)]],
+            email: [null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/)]],
             message: [null, Validators.required]
         })
     }

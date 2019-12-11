@@ -38,7 +38,7 @@ export class ReviewsTabComponent implements OnInit {
     }
     private _validation(): void {
         this.commentForm = this._fb.group({
-            email: ['', [Validators.required, Validators.pattern(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/)]],
+            email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/)]],
             name: ['', Validators.required],
             advantages: ['', Validators.required],
             limitations: ['', Validators.required],

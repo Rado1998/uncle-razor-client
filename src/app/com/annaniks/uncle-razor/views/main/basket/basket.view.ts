@@ -271,6 +271,7 @@ export class BasketView implements OnInit {
         this._orderForm.patchValue({
             city: city
         })
+        
     }
 
     private _setRouteSteps(): void {
@@ -338,10 +339,10 @@ export class BasketView implements OnInit {
         this._productIdArray.splice(index, 1)
         if (this._platformService.isBrowser) {
             let product = JSON.parse(localStorage.getItem('basket_products'));
-            let deletedProduct:Product = product.filter((data) => {
+            let deletedProduct: Product = product.filter((data) => {
                 return data.id == deletedProductId
             })[0]
-            let index:number = product.indexOf(deletedProduct);
+            let index: number = product.indexOf(deletedProduct);
             if (index > -1) {
                 product.splice(index, 1);
                 localStorage.setItem('basket_products', JSON.stringify(product));
@@ -644,7 +645,7 @@ export class BasketView implements OnInit {
             if (count == promoCodeLength) {
                 this.isDiscount = false
             } else {
-                this.isDiscount = true
+                this.isDiscount = true;
                 for (let id of this._productIdArray) {
                     let salePrice;
                     let discountType: string;

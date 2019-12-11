@@ -192,9 +192,7 @@
 
 .order_container {
   .form_group {
-    .label_wrapper_right {
-      width: 92px;
-    }
+ 
     .label_wrapper_left {
       width: 100px;
     }
@@ -224,7 +222,16 @@
       width: 100%;
     }
   }
-
+.authorized-label{
+  .label_wrapper_right {
+    width: 93px;
+  }
+}
+.unauthorized-label{
+  .label_wrapper_right {
+    width: 183px;
+  }
+}
   .left,
   .right {
     width: 50%;
@@ -252,15 +259,16 @@
     label {
       font-size: 15px;
     }
-    .req_message {
-      margin-top: 5px;
-      margin-bottom: 0;
-      font-size: 11px;
-      font-weight: 200;
-      color: #b9b9b9;
-    }
-  }
 
+  }
+  .req_message {
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-size: 11px;
+    font-weight: 300;
+    color: grey;
+    // color: #b9b9b9;
+  }
   .price_container {
     width: 300px;
     .sh_price {

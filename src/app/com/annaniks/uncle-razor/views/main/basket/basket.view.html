@@ -87,6 +87,7 @@
                                 <div class="form_group">
                                     <div class="label_wrapper_left">
                                         <label>E-mail</label>
+                                        <p class="req_message">обязательно</p>
                                     </div>
                                     <div class="input_container">
                                         <input type="text" formControlName="email" />
@@ -99,11 +100,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="right">
-
-                                <div *ngIf="isAuthorized" class="form_group">
+                            <div [ngClass]="{'authorized-label':!isAuthorized,'unauthorized-label':isAuthorized}" class="right">
+                                <div  *ngIf="isAuthorized" class="form_group">
                                     <div class="label_wrapper_right">
                                         <label>Основные адреса</label>
+                                        <p class="req_message">не обязательно</p>
                                     </div>
                                     <div class="input_container">
                                         <p-dropdown [emptyFilterMessage]="'Результаты не найдены'"
@@ -117,6 +118,7 @@
                                 <div class="form_group">
                                     <div class="label_wrapper_right">
                                         <label>Город</label>
+                                        <p class="req_message">обязательно</p>
                                     </div>
                                     <div class="input_container">
                                         <p-dropdown [options]="cities" [filter]="true"
@@ -132,6 +134,7 @@
                                 <div class="form_group">
                                     <div class="label_wrapper_right">
                                         <label>Адрес</label>
+                                        <p class="req_message">обязательно</p>
                                     </div>
                                     <div class="input_container">
                                         <input type="text" formControlName="address" />
@@ -143,6 +146,7 @@
                                 <div class="form_group">
                                     <div class="label_wrapper_right">
                                         <label>Индекс</label>
+                                        <p class="req_message">обязательно</p>
                                     </div>
                                     <div class="input_container">
                                         <input type="text" OnlyNumber="true" formControlName="index" />
